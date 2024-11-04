@@ -6,6 +6,7 @@ import com.example.layered.entity.Memo;
 import com.example.layered.service.MemoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController //@Controller + @ResponseBody
@@ -37,5 +39,12 @@ public class MemoController {
 
         // Service Layer 호출, 응답
         return new ResponseEntity<>(memoService.saveMemo(dto), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public List<MemoResponseDto> findAllMemos() {
+
+        return memoService.findAllMemos();
+
     }
 }
