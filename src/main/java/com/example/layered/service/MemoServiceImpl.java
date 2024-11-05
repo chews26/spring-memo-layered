@@ -48,13 +48,34 @@ public class MemoServiceImpl implements MemoService {
 
     @Override
     public MemoResponseDto findMemoById(Long id) {
-
+        // 식별자의 Memo가 없다면?
         Memo memo = memoRepository.findMemoById(id);
 
+        // NPE 방지
         if (memo == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
         }
 
         return new MemoResponseDto(memo);
     }
+
+    @Override
+    public MemoResponseDto updateMemo(Long id, String title, String contents) {
+
+        final Memo memo = memoRepository.findMemoById(id);
+
+        // NPE 방지
+        if (memo == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
+        }
+
+        if (title == null || contents == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The Title and contents are required values");
+        }
+
+        memo.update(title, contents);
+
+        return new MemoResponseDto(memo);
+    }
+
 }
