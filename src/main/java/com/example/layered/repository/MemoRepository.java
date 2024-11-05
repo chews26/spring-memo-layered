@@ -14,6 +14,8 @@ public interface MemoRepository {
 
     Optional<Memo> findMemoById(long id);
 
+    Memo findMemoByOrElseThrow(long id);
+
     int updateMemo(Long id, String title, String contents);
 
     int updateTitle(Long id, String title);
