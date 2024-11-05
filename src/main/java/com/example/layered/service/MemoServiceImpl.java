@@ -62,7 +62,7 @@ public class MemoServiceImpl implements MemoService {
     @Override
     public MemoResponseDto updateMemo(Long id, String title, String contents) {
 
-        final Memo memo = memoRepository.findMemoById(id);
+        Memo memo = memoRepository.findMemoById(id);
 
         // NPE 방지
         if (memo == null) {
@@ -74,6 +74,25 @@ public class MemoServiceImpl implements MemoService {
         }
 
         memo.update(title, contents);
+
+        return new MemoResponseDto(memo);
+    }
+
+    @Override
+    public MemoResponseDto updateTitle(Long id, String title, String contents) {
+        // memo 조회
+        Memo memo = memoRepository.findMemoById(id);
+
+        // NPE 방지
+        if (memo == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
+        }
+
+        if (title == null || contents != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The Title and contents are required values");
+        }
+
+        memo.updateTitle(title);
 
         return new MemoResponseDto(memo);
     }
