@@ -33,7 +33,6 @@ public class JdbcTemplateMemoRepository implements MemoRepository {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("memo").usingGeneratedKeyColumns("id");
 
-
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("title", memo.getTitle());
         parameters.put("contents", memo.getContents());
@@ -51,19 +50,22 @@ public class JdbcTemplateMemoRepository implements MemoRepository {
     @Override
     public Optional<Memo> findMemoById(long id) {
         List<Memo> result = jdbcTemplate.query("select * from memo where id=?", memoRowMapperV2(), id);
-
         return result.stream().findAny();
     }
 
     @Override
     public int updateMemo(Long id, String title, String contents) {
-
         return jdbcTemplate.update("update memo set title = ?, contents = ? where id = ?", title, contents, id);
     }
 
     @Override
-    public void deleteMemo(Long id) {
+    public int updateTitle(Long id, String title) {
+        return jdbcTemplate.update("update memo set title = ? where id = ?", title, id);
+    }
 
+    @Override
+    public int deleteMemo(Long id) {
+        return jdbcTemplate.update("delete from memo where id = ?", id);
     }
 
     private RowMapper<MemoResponseDto> memoRowMapper() {

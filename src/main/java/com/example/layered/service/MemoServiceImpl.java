@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.beans.Transient;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,33 +81,31 @@ public class MemoServiceImpl implements MemoService {
 
     @Override
     public MemoResponseDto updateTitle(Long id, String title, String contents) {
-//        // memo 조회
-//        Memo memo = memoRepository.findMemoById(id);
-//
-//        // NPE 방지
-//        if (memo == null) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
-//        }
-//
-//        if (title == null || contents != null) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The Title and contents are required values");
-//        }
-//
-//        memo.updateTitle(title);
-//
-//        return new MemoResponseDto(memo);
-        return null;
+
+        if (title == null || contents != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The Title and contents are required values");
+        }
+
+        int updatedRow = memoRepository.updateTitle(id, title);
+
+        // NPE 방지
+        if (updatedRow == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
+        }
+
+        Optional<Memo> optionalMemo = memoRepository.findMemoById(id);
+
+        return new MemoResponseDto(optionalMemo.get());
     }
 
     @Override
     public void deleteMemo(Long id) {
-//        Memo memo = memoRepository.findMemoById(id);
-//
-//        if (memo == null) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
-//        }
-//
-//        memoRepository.deleteMemo(id);
+
+        int deletedRow = memoRepository.deleteMemo(id);
+
+        if (deletedRow == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
+        }
     }
 
 }
